@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tell.data_process_eia_930 &mdash; TELL latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> TELL
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tell_quickstarter.html">Quickstarter Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgement.html">Acknowledgement</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TELL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>tell.data_process_eia_930</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tell.data_process_eia_930</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+
+
+<div class="viewcode-block" id="list_EIA_930_files"><a class="viewcode-back" href="../../tell.html#tell.data_process_eia_930.list_EIA_930_files">[docs]</a><span class="k">def</span> <span class="nf">list_EIA_930_files</span><span class="p">(</span><span class="n">input_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a list of all the filenames for EIA 930 hourly load data (xlsx)</span>
+<span class="sd">    :param input_dir:               Directory where EIA 930 hourly load data</span>
+<span class="sd">    :type input_dir:                dir</span>
+<span class="sd">    :return:                        List of EIA 930 hourly load files by BA short name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ba_name</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AEC&#39;</span><span class="p">,</span> <span class="s1">&#39;YAD&#39;</span><span class="p">,</span> <span class="s1">&#39;AZPS&#39;</span><span class="p">,</span> <span class="s1">&#39;AECI&#39;</span><span class="p">,</span> <span class="s1">&#39;BPAT&#39;</span><span class="p">,</span> <span class="s1">&#39;CISO&#39;</span><span class="p">,</span> <span class="s1">&#39;CPLE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHPD&#39;</span><span class="p">,</span> <span class="s1">&#39;DOPD&#39;</span><span class="p">,</span> <span class="s1">&#39;DUK&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;EPE&#39;</span><span class="p">,</span> <span class="s1">&#39;ERCO&#39;</span><span class="p">,</span> <span class="s1">&#39;EEI&#39;</span><span class="p">,</span> <span class="s1">&#39;FPL&#39;</span><span class="p">,</span> <span class="s1">&#39;FPC&#39;</span><span class="p">,</span> <span class="s1">&#39;GVL&#39;</span><span class="p">,</span> <span class="s1">&#39;HST&#39;</span><span class="p">,</span> <span class="s1">&#39;IPCO&#39;</span><span class="p">,</span> <span class="s1">&#39;IID&#39;</span><span class="p">,</span> <span class="s1">&#39;JEA&#39;</span><span class="p">,</span> <span class="s1">&#39;LDWP&#39;</span><span class="p">,</span> <span class="s1">&#39;LGEE&#39;</span><span class="p">,</span> <span class="s1">&#39;NWMT&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;NEVP&#39;</span><span class="p">,</span> <span class="s1">&#39;ISNE&#39;</span><span class="p">,</span> <span class="s1">&#39;NSB&#39;</span><span class="p">,</span> <span class="s1">&#39;NYIS&#39;</span><span class="p">,</span> <span class="s1">&#39;OVEC&#39;</span><span class="p">,</span> <span class="s1">&#39;PACW&#39;</span><span class="p">,</span> <span class="s1">&#39;PACE&#39;</span><span class="p">,</span> <span class="s1">&#39;GRMA&#39;</span><span class="p">,</span> <span class="s1">&#39;FMPP&#39;</span><span class="p">,</span> <span class="s1">&#39;GCPD&#39;</span><span class="p">,</span> <span class="s1">&#39;PJM&#39;</span><span class="p">,</span> <span class="s1">&#39;AVRN&#39;</span><span class="p">,</span> <span class="s1">&#39;PSCO&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;PGE&#39;</span><span class="p">,</span> <span class="s1">&#39;PNM&#39;</span><span class="p">,</span> <span class="s1">&#39;PSEI&#39;</span><span class="p">,</span> <span class="s1">&#39;BANC&#39;</span><span class="p">,</span> <span class="s1">&#39;SRP&#39;</span><span class="p">,</span> <span class="s1">&#39;SCL&#39;</span><span class="p">,</span> <span class="s1">&#39;SCEG&#39;</span><span class="p">,</span> <span class="s1">&#39;SC&#39;</span><span class="p">,</span> <span class="s1">&#39;SPA&#39;</span><span class="p">,</span> <span class="s1">&#39;SOCO&#39;</span><span class="p">,</span> <span class="s1">&#39;TPWR&#39;</span><span class="p">,</span> <span class="s1">&#39;TAL&#39;</span><span class="p">,</span> <span class="s1">&#39;TEC&#39;</span><span class="p">,</span> <span class="s1">&#39;TVA&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;TIDC&#39;</span><span class="p">,</span> <span class="s1">&#39;WAUW&#39;</span><span class="p">,</span> <span class="s1">&#39;AVA&#39;</span><span class="p">,</span> <span class="s1">&#39;SEC&#39;</span><span class="p">,</span> <span class="s1">&#39;TEPC&#39;</span><span class="p">,</span> <span class="s1">&#39;WALC&#39;</span><span class="p">,</span> <span class="s1">&#39;WACM&#39;</span><span class="p">,</span> <span class="s1">&#39;SEPA&#39;</span><span class="p">,</span> <span class="s1">&#39;GRIF&#39;</span><span class="p">,</span> <span class="s1">&#39;GWA&#39;</span><span class="p">,</span> <span class="s1">&#39;MISO&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;DEAA&#39;</span><span class="p">,</span> <span class="s1">&#39;CPLW&#39;</span><span class="p">,</span> <span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="s1">&#39;WWA&#39;</span><span class="p">,</span> <span class="s1">&#39;SWPP&#39;</span><span class="p">]</span>
+
+    <span class="n">path_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ba_name</span><span class="p">:</span>
+        <span class="n">path_to_check</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.xlsx&#39;</span><span class="p">)</span>
+        <span class="n">path_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_to_check</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">path_list</span></div>
+
+
+<div class="viewcode-block" id="eia_data_subset"><a class="viewcode-back" href="../../tell.html#tell.data_process_eia_930.eia_data_subset">[docs]</a><span class="k">def</span> <span class="nf">eia_data_subset</span><span class="p">(</span><span class="n">file_string</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select wanted columns in each file</span>
+<span class="sd">    :param file_string:            File name of EIA 930 hourly load data by BA</span>
+<span class="sd">    :type file_string:             str</span>
+<span class="sd">    :param output_dir:             Directory to store the EIA 930 hourly load data as a csv</span>
+<span class="sd">    :type output__dir:             dir</span>
+<span class="sd">    :return:                       Subsetted dataframe of EIA 930 hourly data</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="c1"># read in the Published Hourly Data</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file_string</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Published Hourly Data&#39;</span><span class="p">)</span>
+
+    <span class="c1"># use datetime string to get Year, Month, Day, Hour</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;UTC time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Month&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;UTC time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;UTC time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Hour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;UTC time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H&#39;</span><span class="p">)</span>
+
+    <span class="c1"># only keep columns that are needed</span>
+    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="s1">&#39;Day&#39;</span><span class="p">,</span> <span class="s1">&#39;Hour&#39;</span><span class="p">,</span> <span class="s1">&#39;DF&#39;</span><span class="p">,</span> <span class="s1">&#39;Adjusted D&#39;</span><span class="p">,</span> <span class="s1">&#39;Adjusted NG&#39;</span><span class="p">,</span> <span class="s1">&#39;Adjusted TI&#39;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col_names</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># extract date (Year, Month, Day, Hour), &#39;Forecast_Demand_MWh&#39;, &#39;Adjusted_Demand_MWh&#39;, &#39;Adjusted_Generation_MWh&#39;,</span>
+    <span class="c1"># &#39;Adjusted_Interchange_MWh&#39;</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;DF&quot;</span><span class="p">:</span> <span class="s2">&quot;Forecast_Demand_MWh&#39;&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;Adjusted D&quot;</span><span class="p">:</span> <span class="s2">&quot;Adjusted_Demand_MWh&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;Adjusted NG&quot;</span><span class="p">:</span> <span class="s2">&quot;Adjusted_Generation_MWh&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;Adjusted TI&quot;</span><span class="p">:</span> <span class="s2">&quot;Adjusted_Interchange_MWh&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">BA_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_string</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">BA_name</span><span class="si">}</span><span class="s1">_hourly_load_data.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="process_eia_930"><a class="viewcode-back" href="../../tell.html#tell.data_process_eia_930.process_eia_930">[docs]</a><span class="k">def</span> <span class="nf">process_eia_930</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read in list of EIA 930 files, subset files and save as csv in new file name</span>
+
+<span class="sd">    :param input_dir:              Directory where EIA 930 hourly load data</span>
+<span class="sd">    :type input_dir:               dir</span>
+
+<span class="sd">    :param output_dir:             Directory to store the EIA 930 hourly load data as a csv</span>
+<span class="sd">    :type output__dir:             dir</span>
+
+<span class="sd">    :return:                       Subsetted dataframe of EIA 930 hourly data by BA short name</span>
+
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="c1"># run the list function for the EIA files</span>
+    <span class="n">list_of_files</span> <span class="o">=</span> <span class="n">list_EIA_930_files</span><span class="p">(</span><span class="n">input_dir</span><span class="p">)</span>
+
+    <span class="c1"># run all files in parallel</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span>
+        <span class="n">delayed</span><span class="p">(</span><span class="n">eia_data_subset</span><span class="p">)(</span>
+            <span class="n">file_string</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span>
+        <span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">list_of_files</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Batelle Memorial Institute.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tell.match &mdash; TELL latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> TELL
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tell_quickstarter.html">Quickstarter Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgement.html">Acknowledgement</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TELL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>tell.match</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tell.match</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">tell.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+
+
+<div class="viewcode-block" id="count_matches"><a class="viewcode-back" href="../../tell.html#tell.match.count_matches">[docs]</a><span class="k">def</span> <span class="nf">count_matches</span><span class="p">(</span><span class="n">states_key</span><span class="p">,</span> <span class="n">fips_key</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;if&#39;</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="s1">&#39;an&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;the&#39;</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Count the number of word matches between two primary keys.</span>
+
+<span class="sd">    :param states_key:                 The key representing the &lt;state_abbrev&gt;_&lt;county_name&gt; in the</span>
+<span class="sd">                                       states data frame</span>
+<span class="sd">    :type states_key:                  str</span>
+
+<span class="sd">    :param fips_key:                   The key representing the &lt;state_abbrev&gt;_&lt;county_name&gt; in the</span>
+<span class="sd">                                       FIPS data frame</span>
+<span class="sd">    :type fips_key:                    str</span>
+
+<span class="sd">    :param ignore:                     A list of common english words to ignore.</span>
+<span class="sd">    :type ignore:                      list</span>
+
+<span class="sd">    :return:                           Total number of matches or None if no matches</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># get states state name</span>
+    <span class="n">states_split</span> <span class="o">=</span> <span class="n">states_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="n">states_state_name</span> <span class="o">=</span> <span class="n">states_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># get fips state name</span>
+    <span class="n">fips_split</span> <span class="o">=</span> <span class="n">fips_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="n">fips_state_name</span> <span class="o">=</span> <span class="n">fips_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># if state names match proceed, else return None</span>
+    <span class="k">if</span> <span class="n">states_state_name</span> <span class="o">==</span> <span class="n">fips_state_name</span><span class="p">:</span>
+
+        <span class="c1"># split out state abbreviation and space seperators; only keep county info and ensure there</span>
+        <span class="c1">#    are no underscores in the county name</span>
+        <span class="n">states_key_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">states_split</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]]</span>
+
+        <span class="c1"># check for any &quot;de&quot; suffix and join to second position (e.g., &quot;de witt&quot; to &quot;dewitt&quot;)</span>
+        <span class="n">states_key_split</span> <span class="o">=</span> <span class="n">combine_elements</span><span class="p">(</span><span class="s1">&#39;de&#39;</span><span class="p">,</span> <span class="n">states_key_split</span><span class="p">)</span>
+
+        <span class="c1"># set initial count of matches to zero</span>
+        <span class="n">ct</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># for each word in the states data frame key...</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">states_key_split</span><span class="p">:</span>
+
+            <span class="c1"># if word in the fips data frame key, increment count</span>
+            <span class="n">fips_key_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fips_split</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]]</span>
+
+            <span class="c1"># check for any &quot;de&quot; suffix and join to second position (e.g., &quot;de witt&quot; to &quot;dewitt&quot;)</span>
+            <span class="n">fips_key_split</span> <span class="o">=</span> <span class="n">combine_elements</span><span class="p">(</span><span class="s1">&#39;de&#39;</span><span class="p">,</span> <span class="n">fips_key_split</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">fips_key_split</span><span class="p">):</span>
+                <span class="n">ct</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># if there were no matches, return None</span>
+        <span class="k">if</span> <span class="n">ct</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">fips_key</span><span class="p">:</span> <span class="n">ct</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="combine_elements"><a class="viewcode-back" href="../../tell.html#tell.match.combine_elements">[docs]</a><span class="k">def</span> <span class="nf">combine_elements</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">part_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check for any &quot;de&quot; suffix and join to second position (e.g., &quot;de witt&quot; to &quot;dewitt&quot;)</span>
+<span class="sd">        :param part:                 The suffix of interest to be searched for in the parts_list</span>
+<span class="sd">        :type part:                  str</span>
+<span class="sd">        :param part_list:           The str of interest separated into a list of parts</span>
+<span class="sd">        :type part_list:            list</span>
+<span class="sd">        :return:                    Joined part list with combined to suffix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">part_list</span><span class="p">:</span>
+        <span class="n">one_idx</span> <span class="o">=</span> <span class="n">part_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">part_list</span><span class="p">[</span><span class="n">one_idx</span><span class="p">]</span><span class="si">}{</span><span class="n">part_list</span><span class="p">[</span><span class="n">one_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">part_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">one_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">part_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">one_idx</span><span class="p">)</span>
+        <span class="n">part_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">part_list</span></div>
+
+
+<div class="viewcode-block" id="keep_valid"><a class="viewcode-back" href="../../tell.html#tell.match.keep_valid">[docs]</a><span class="k">def</span> <span class="nf">keep_valid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Keep only dictionaries that have a count for a county name present.</span>
+<span class="sd">        :param x:                Dictionary with matches from filter_two</span>
+<span class="sd">        :type x:                 dict</span>
+<span class="sd">        :return:                 Dictionary with count with county name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="find_county"><a class="viewcode-back" href="../../tell.html#tell.match.find_county">[docs]</a><span class="k">def</span> <span class="nf">find_county</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add the FIPS key to the data frame where the optimal value with a count</span>
+<span class="sd">      of 1 has been identified.</span>
+<span class="sd">      :param d:              Dictionary with count with county name from keep_valid</span>
+<span class="sd">      :type d:               dict</span>
+<span class="sd">      :return:               FIPS key combined to county dictionary with a count of 1 or more</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="n">max_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="n">keys</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">val_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+            <span class="n">val_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">if</span> <span class="n">val_dict</span><span class="p">[</span><span class="n">max_value</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">max_value</span><span class="p">)]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_max_count"><a class="viewcode-back" href="../../tell.html#tell.match.get_max_count">[docs]</a><span class="k">def</span> <span class="nf">get_max_count</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a column that has the count of the optimal county name;</span>
+<span class="sd">     ideally this is 1, if a different number investigate futher</span>
+<span class="sd">     :param d:              Dictionary with FIPS key from find_county</span>
+<span class="sd">     :type d:               dict</span>
+<span class="sd">     :return:               Dataframe of FIPS matches with column count of optimal county name</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+
+        <span class="n">max_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="n">keys</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">val_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+            <span class="n">val_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="n">val_dict</span><span class="p">[</span><span class="n">max_value</span><span class="p">]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="prepare_data"><a class="viewcode-back" href="../../tell.html#tell.match.prepare_data">[docs]</a><span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span><span class="n">fips_file</span><span class="p">,</span> <span class="n">service_area_file</span><span class="p">,</span> <span class="n">sales_ult_file</span><span class="p">,</span> <span class="n">bal_auth_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load and prepare data.  Reduce complexity by making state and county names lower case and splitting</span>
+<span class="sd">    out commonly known trailing words that do not exist in both data sets.  Build key to join by</span>
+<span class="sd">    where &lt;state_abbrev&gt;_&lt;county_lower&gt;.</span>
+<span class="sd">    :param fips_file:                           FIPS code csv input</span>
+<span class="sd">    :type fips_file:                            str</span>
+<span class="sd">    :param service_area_file:                   Balancing authority service area csv input</span>
+<span class="sd">    :type service_area_file:                    str</span>
+<span class="sd">    :param sales_ult_file:                      Balancing authority sales utility csv input</span>
+<span class="sd">    :type sales_ult_file:                       str</span>
+<span class="sd">    :param bal_auth_file:                       Balancing authority and ID codes csv input</span>
+<span class="sd">    :type bal_auth_file:                        str</span>
+<span class="sd">    :return:                                    [0] df_fips: Dataframe of prepared and cleaned FIPS data</span>
+<span class="sd">                                                [1] df_states:: Dataframe of prepared and cleaned Service area data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># read in data</span>
+    <span class="n">df_fips</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fips_file</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df_states</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">service_area_file</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Counties&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">df_states</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">service_area_file</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Counties_States&#39;</span><span class="p">)</span>
+    <span class="n">df_ult</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">sales_ult_file</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;States&#39;</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">df_ba</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">bal_auth_file</span><span class="p">)</span>
+
+    <span class="c1"># strip county name from full reference and make lower case for known trailing words replace apostrophes</span>
+    <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;county_lower&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;county_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; county&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;county_lower&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;county_lower&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; parish&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span>
+                                                                                                                 <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># make state abbreviation lower case</span>
+    <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;state_abbreviation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;state_abbreviation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="c1"># create key as lower case county name replace apostrophes</span>
+    <span class="n">df_states</span><span class="p">[</span><span class="s1">&#39;county_lower&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_states</span><span class="p">[</span><span class="s1">&#39;County&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">df_states</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_states</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="c1"># create a unified &lt;state_abbrev&gt;_&lt;county_lower&gt; key to merge by</span>
+    <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;fips_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;state_abbreviation&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;county_lower&#39;</span><span class="p">]</span>
+    <span class="n">df_states</span><span class="p">[</span><span class="s1">&#39;states_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_states</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">df_states</span><span class="p">[</span><span class="s1">&#39;county_lower&#39;</span><span class="p">]</span>
+
+    <span class="c1"># filter df_ult and df_ba</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df_ult</span> <span class="o">=</span> <span class="n">df_ult</span><span class="p">[[</span><span class="s2">&quot;Utility Number&quot;</span><span class="p">,</span> <span class="s2">&quot;Utility Name&quot;</span><span class="p">,</span> <span class="s2">&quot;BA_CODE&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;BA_CODE&#39;</span><span class="p">:</span> <span class="s1">&#39;BA Code&#39;</span><span class="p">})</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">df_ult</span> <span class="o">=</span> <span class="n">df_ult</span><span class="p">[[</span><span class="s2">&quot;Utility Number&quot;</span><span class="p">,</span> <span class="s2">&quot;Utility Name&quot;</span><span class="p">,</span> <span class="s2">&quot;BA Code&quot;</span><span class="p">]]</span>
+    <span class="n">df_ba</span> <span class="o">=</span> <span class="n">df_ba</span><span class="p">[[</span><span class="s2">&quot;BA Code&quot;</span><span class="p">,</span> <span class="s2">&quot;BA ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Balancing Authority Name&quot;</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="n">df_fips</span><span class="p">,</span> <span class="n">df_states</span><span class="p">,</span> <span class="n">df_ult</span><span class="p">,</span> <span class="n">df_ba</span></div>
+
+
+<div class="viewcode-block" id="filter_one"><a class="viewcode-back" href="../../tell.html#tell.match.filter_one">[docs]</a><span class="k">def</span> <span class="nf">filter_one</span><span class="p">(</span><span class="n">df_fips</span><span class="p">,</span> <span class="n">df_states</span><span class="p">,</span> <span class="n">df_ult</span><span class="p">,</span> <span class="n">df_ba</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Join datasets together where possible based on common key.</span>
+<span class="sd">    :param fips_file:             Dataframe of prepared and cleaned FIPS data from prepare_data</span>
+<span class="sd">    :type fips_file:              str</span>
+<span class="sd">    :param service_area_file:     Dataframe of prepared and cleaned Service area data from prepare_data</span>
+<span class="sd">    :type service_area_file:      str</span>
+<span class="sd">    :return:                      [0] dataframe of valid data with a match between df_fips and df_states</span>
+<span class="sd">                                  [1] dataframe of data without a match between df_fips and df_states</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># merge states and fips based on key</span>
+    <span class="n">df_states_fips</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">df_states</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">df_fips</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;states_key&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;fips_key&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="c1"># merge to states_fips merge to ba utility dataframe by ult number</span>
+    <span class="n">df_states_fips</span><span class="p">[</span><span class="s1">&#39;Utility Number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_states_fips</span><span class="p">[</span><span class="s1">&#39;Utility Number&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">df_fips_ult</span> <span class="o">=</span> <span class="n">df_states_fips</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_ult</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;Utility Number&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="c1"># add the BA number and name by BA ulitity code</span>
+    <span class="n">df_valid</span> <span class="o">=</span> <span class="n">df_fips_ult</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_ba</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;BA Code&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;BA Code&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="c1"># filter out remaining rows that did not have a match</span>
+    <span class="n">df_nan</span> <span class="o">=</span> <span class="n">df_valid</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_valid</span><span class="p">[</span><span class="s1">&#39;county_lower_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># only keep successfully joined data in the merged df</span>
+    <span class="n">df_valid</span> <span class="o">=</span> <span class="n">df_valid</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">df_valid</span><span class="p">[</span><span class="s1">&#39;county_lower_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># drop unneeded columns</span>
+    <span class="n">df_valid</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;county_lower_y&#39;</span><span class="p">,</span> <span class="s1">&#39;Utility Name_y&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df_nan</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;county_lower_y&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_valid</span><span class="p">,</span> <span class="n">df_nan</span></div>
+
+
+<div class="viewcode-block" id="filter_two"><a class="viewcode-back" href="../../tell.html#tell.match.filter_two">[docs]</a><span class="k">def</span> <span class="nf">filter_two</span><span class="p">(</span><span class="n">df_fips</span><span class="p">,</span> <span class="n">df_nan</span><span class="p">,</span> <span class="n">df_valid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Match NaN records by cleaning up naming conventions based on the most suitable match.</span>
+<span class="sd">    :param df_fips:     Dataframe of prepared and cleaned FIPS data from prepare_data</span>
+<span class="sd">    :type df_fips:      pd.DataFrame</span>
+<span class="sd">    :param df_nan:      Dataframe of data without a match between df_fips and df_states</span>
+<span class="sd">    :type df_nan:       pd.DataFrame</span>
+<span class="sd">    :param df_valid:    Dataframe of valid data with a match between df_fips and df_states</span>
+<span class="sd">    :type df_valid:     pd.DataFrame</span>
+<span class="sd">    :return:            [0] df_valid: Dataframe of valid data with a match between df_fips and df_states</span>
+<span class="sd">                        [1] df_nan_bad: Dataframe of data without a match between df_fips and df_states</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># get keys from states that are in teh FIPS code data frame that have NaN records</span>
+    <span class="n">nan_keys_fips</span> <span class="o">=</span> <span class="n">df_fips</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_fips</span><span class="p">[</span><span class="s1">&#39;state_abbreviation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())][</span><span class="s1">&#39;fips_key&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+    <span class="c1"># df_nan[&#39;fips_key&#39;] = None</span>
+    <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[]]</span> <span class="o">*</span> <span class="n">df_nan</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">fips_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nan_keys_fips</span><span class="p">):</span>
+        <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;states_key&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">count_matches</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fips_key</span><span class="p">)])</span>
+
+    <span class="c1"># keep only dictionaries that have a count for a county name present</span>
+    <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">keep_valid</span><span class="p">)</span>
+
+    <span class="c1"># generate a column that has the count of the optimal county name;</span>
+    <span class="c1">#   ideally this is 1, if a different number investigate futher</span>
+    <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;count_of_selected&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_max_count</span><span class="p">)</span>
+
+    <span class="c1"># add the FIPS key to the data frame where the optimal value with a count of 1 has been identified</span>
+    <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;fips_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">find_county</span><span class="p">)</span>
+
+    <span class="c1"># remove unneeded columns</span>
+    <span class="n">df_nan</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;state_name&#39;</span><span class="p">,</span> <span class="s1">&#39;state_abbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;state_FIPS&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;county_name&#39;</span><span class="p">,</span> <span class="s1">&#39;county_FIPS&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># extract rows now having a vaild match</span>
+    <span class="n">df_nan_good</span> <span class="o">=</span> <span class="n">df_nan</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;count_of_selected&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># extract rows still having an invaild match</span>
+    <span class="n">df_nan_bad</span> <span class="o">=</span> <span class="n">df_nan</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;count_of_selected&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># merge good records with FIPS data frame</span>
+    <span class="n">mrx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">df_nan_good</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">df_fips</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;fips_key&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;fips_key&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="c1"># drop unneeded columns</span>
+    <span class="n">mrx</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;count_of_selected&#39;</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># reorder columns to match df_valid</span>
+    <span class="n">mrx</span> <span class="o">=</span> <span class="n">mrx</span><span class="p">[</span><span class="n">df_valid</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># add newly valid records to master data frame</span>
+    <span class="n">df_valid</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_valid</span><span class="p">,</span> <span class="n">mrx</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">df_valid</span><span class="p">,</span> <span class="n">df_nan_bad</span></div>
+
+
+<div class="viewcode-block" id="data_format"><a class="viewcode-back" href="../../tell.html#tell.match.data_format">[docs]</a><span class="k">def</span> <span class="nf">data_format</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select for wanted columns and rename columns.</span>
+<span class="sd">    :param df:                  Data frame containing valid data.</span>
+<span class="sd">    :type df:                   pd.DataFame</span>
+<span class="sd">    :return:                    Data frame with relevant and renamed columns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Data Year&#39;</span><span class="p">,</span> <span class="s1">&#39;Utility Number&#39;</span><span class="p">,</span> <span class="s1">&#39;Utility Name_x&#39;</span><span class="p">,</span> <span class="s1">&#39;state_abbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;state_name&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;state_FIPS&#39;</span><span class="p">,</span> <span class="s1">&#39;county_name&#39;</span><span class="p">,</span> <span class="s1">&#39;county_FIPS&#39;</span><span class="p">,</span> <span class="s1">&#39;BA ID&#39;</span><span class="p">,</span> <span class="s1">&#39;BA Code&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;Balancing Authority Name&#39;</span><span class="p">]</span>
+
+    <span class="c1"># only keep columns that are needed</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col_names</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># rename columns</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Data Year&quot;</span><span class="p">:</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;Utility Number&quot;</span><span class="p">:</span> <span class="s2">&quot;utility_number&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;Utility Name_x&quot;</span><span class="p">:</span> <span class="s2">&quot;utility_name&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;state_abbreviation&quot;</span><span class="p">:</span> <span class="s2">&quot;state_abbreviation&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;state_name&quot;</span><span class="p">:</span> <span class="s2">&quot;state_name&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;state_FIPS&quot;</span><span class="p">:</span> <span class="s2">&quot;state_fips&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;county_name&quot;</span><span class="p">:</span> <span class="s2">&quot;county_name&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;county_FIPS&quot;</span><span class="p">:</span> <span class="s2">&quot;county_fips&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;BA ID&quot;</span><span class="p">:</span> <span class="s2">&quot;ba_number&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;BA Code&quot;</span><span class="p">:</span> <span class="s2">&quot;ba_abbreviation&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;Balancing Authority Name&quot;</span><span class="p">:</span> <span class="s2">&quot;ba_name&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># remove comma from ba_name</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ba_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ba_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="process_data"><a class="viewcode-back" href="../../tell.html#tell.match.process_data">[docs]</a><span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">target_year</span><span class="p">,</span> <span class="n">fips_file</span><span class="p">,</span> <span class="n">service_area_file</span><span class="p">,</span> <span class="n">sales_ult_file</span><span class="p">,</span> <span class="n">bal_auth_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Workflow function to join files and clean up erroneous and missing data.  Suggest possible solutions from the</span>
+<span class="sd">    FIPS records for unmatched counties.</span>
+<span class="sd">    :param target_year:                         Year to process; four digit year (e.g., 1990)</span>
+<span class="sd">    :type target_year:                          int</span>
+<span class="sd">    :param fips_file:                           FIPS code csv input</span>
+<span class="sd">    :type fips_file:                            str</span>
+<span class="sd">    :param service_area_file:                   Balancing authority service area csv input</span>
+<span class="sd">    :type service_area_file:                    str</span>
+<span class="sd">    :param sales_ult_file:                      Balancing authority sales utility csv input</span>
+<span class="sd">    :type sales_ult_file:                       str</span>
+<span class="sd">    :param bal_auth_file:                       Balancing authority and ID codes csv input</span>
+<span class="sd">    :type bal_auth_file:                        str</span>
+<span class="sd">    :param output_dir:                          Directory to store FIPS BA subset output</span>
+<span class="sd">    :type output_dir:                           dir</span>
+<span class="sd">    :return:                                    Dataframe of valid FIPS matched data merged with BA code</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># initialize logger</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="n">output_directory</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">initialize_logger</span><span class="p">()</span>
+
+    <span class="c1"># report start time</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start time:  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)))</span>
+
+    <span class="c1"># prepare data</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing data...&quot;</span><span class="p">)</span>
+    <span class="n">df_fips</span><span class="p">,</span> <span class="n">df_states</span><span class="p">,</span> <span class="n">df_ult</span><span class="p">,</span> <span class="n">df_ba</span> <span class="o">=</span> <span class="n">prepare_data</span><span class="p">(</span><span class="n">fips_file</span><span class="p">,</span> <span class="n">service_area_file</span><span class="p">,</span> <span class="n">sales_ult_file</span><span class="p">,</span> <span class="n">bal_auth_file</span><span class="p">)</span>
+
+    <span class="c1"># apply filter one</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying filter one...&quot;</span><span class="p">)</span>
+    <span class="n">df_valid</span><span class="p">,</span> <span class="n">df_nan</span> <span class="o">=</span> <span class="n">filter_one</span><span class="p">(</span><span class="n">df_fips</span><span class="p">,</span> <span class="n">df_states</span><span class="p">,</span> <span class="n">df_ult</span><span class="p">,</span> <span class="n">df_ba</span><span class="p">)</span>
+
+    <span class="c1"># apply filter two</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying filter two...&quot;</span><span class="p">)</span>
+    <span class="n">df_valid</span><span class="p">,</span> <span class="n">df_nan</span> <span class="o">=</span> <span class="n">filter_two</span><span class="p">(</span><span class="n">df_fips</span><span class="p">,</span> <span class="n">df_nan</span><span class="p">,</span> <span class="n">df_valid</span><span class="p">)</span>
+
+    <span class="c1"># format columns</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Formatting output data...&quot;</span><span class="p">)</span>
+    <span class="n">df_valid</span> <span class="o">=</span> <span class="n">data_format</span><span class="p">(</span><span class="n">df_valid</span><span class="p">)</span>
+
+    <span class="c1"># get an array of counties that do not have a match</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Identifying unmatched data...&quot;</span><span class="p">)</span>
+    <span class="n">unmatched_counties</span> <span class="o">=</span> <span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;county_lower_x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+    <span class="c1"># report possible matches for the county</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unmatched_counties</span><span class="p">:</span>
+        <span class="n">possible_matches</span> <span class="o">=</span> <span class="n">df_nan</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_nan</span><span class="p">[</span><span class="s1">&#39;county_lower_x&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">][</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Possible matches for unmatched county &quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&quot;: from FIPS file: </span><span class="si">{</span><span class="n">possible_matches</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># keep only the variables that are used in downstream applications:</span>
+    <span class="n">df_valid</span> <span class="o">=</span> <span class="n">df_valid</span><span class="p">[[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;state_fips&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;state_name&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;county_fips&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;county_name&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;ba_number&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;ba_abbreviation&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># rename the columns to use leading capital letters:</span>
+    <span class="n">df_valid</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="s2">&quot;Year&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;state_fips&quot;</span><span class="p">:</span> <span class="s2">&quot;State_FIPS&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;state_name&quot;</span><span class="p">:</span> <span class="s2">&quot;State_Name&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;county_fips&quot;</span><span class="p">:</span> <span class="s2">&quot;County_FIPS&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;county_name&quot;</span><span class="p">:</span> <span class="s2">&quot;County_Name&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;ba_number&quot;</span><span class="p">:</span> <span class="s2">&quot;BA_Number&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;ba_abbreviation&quot;</span><span class="p">:</span> <span class="s2">&quot;BA_Code&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># sort the dataframe by BA number and then county fips code:</span>
+    <span class="n">df_valid</span> <span class="o">=</span> <span class="n">df_valid</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;BA_Number&quot;</span><span class="p">,</span> <span class="s2">&quot;County_FIPS&quot;</span><span class="p">])</span>
+
+    <span class="c1"># drop the duplicates that result from more than one utility-BA combination per county:</span>
+    <span class="n">df_valid</span> <span class="o">=</span> <span class="n">df_valid</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+    <span class="c1"># write to CSV</span>
+    <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;fips_service_match_</span><span class="si">{</span><span class="n">target_year</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing output file to:  </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">df_valid</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># report close time</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;End time:  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)))</span>
+
+    <span class="c1"># close logger and clean up</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">close_logger</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="map_fips_codes"><a class="viewcode-back" href="../../tell.html#tell.match.map_fips_codes">[docs]</a><span class="k">def</span> <span class="nf">map_fips_codes</span><span class="p">(</span><span class="n">start_year</span><span class="p">,</span> <span class="n">end_year</span><span class="p">,</span><span class="n">raw_data_dir</span><span class="p">,</span> <span class="n">current_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Workflow function to run &quot;process_data&quot; function for all years to process.</span>
+<span class="sd">    :param start_year:                         Year to start process; four digit year (e.g., 1990)</span>
+<span class="sd">    :type start_year:                          int</span>
+<span class="sd">    :param end_year:                           Year to end process; four digit year (e.g., 1990)</span>
+<span class="sd">    :type end_year:                            int</span>
+<span class="sd">    :param raw_data_dir:                       Directory where raw data is download via install_supplement.py</span>
+<span class="sd">    :type raw_data_dir:                         dir</span>
+<span class="sd">    :param current_dir:                        Directory where TELL package is downloaded</span>
+<span class="sd">    :type current_dir:                         dir</span>
+<span class="sd">    :return:                                   Dataframe of valid FIPS matched data merged with BA code</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Directory containing the outputs</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_dir</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;outputs&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;fips_mapping_files&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="n">years_to_process</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_year</span><span class="p">,</span> <span class="n">end_year</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">target_year</span> <span class="ow">in</span> <span class="n">years_to_process</span><span class="p">:</span>
+        <span class="c1"># Set paths to files</span>
+        <span class="n">fips_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_data_dir</span><span class="p">,</span> <span class="s1">&#39;state_and_county_fips_codes.csv&#39;</span><span class="p">)</span>
+        <span class="n">service_area_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_data_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Service_Territory_</span><span class="si">{</span><span class="n">target_year</span><span class="si">}</span><span class="s1">.xlsx&#39;</span><span class="p">)</span>
+        <span class="n">sales_ult_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_data_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Sales_Ult_Cust_</span><span class="si">{</span><span class="n">target_year</span><span class="si">}</span><span class="s1">.xlsx&#39;</span><span class="p">)</span>
+        <span class="n">bal_auth_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_data_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Balancing_Authority_</span><span class="si">{</span><span class="n">target_year</span><span class="si">}</span><span class="s1">.xlsx&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Run the process_data function</span>
+        <span class="n">process_data</span><span class="p">(</span><span class="n">target_year</span><span class="p">,</span> <span class="n">fips_file</span><span class="p">,</span> <span class="n">service_area_file</span><span class="p">,</span> <span class="n">sales_ult_file</span><span class="p">,</span> <span class="n">bal_auth_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+        <span class="c1"># Drop duplicates from output file</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;fips_service_match_</span><span class="si">{</span><span class="n">target_year</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="n">output2</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;fips_service_match_</span><span class="si">{</span><span class="n">target_year</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+        <span class="n">output2</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Batelle Memorial Institute.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

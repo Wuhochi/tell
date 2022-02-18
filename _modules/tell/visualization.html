@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tell.visualization &mdash; TELL latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> TELL
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tell_quickstarter.html">Quickstarter Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgement.html">Acknowledgement</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TELL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>tell.visualization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tell.visualization</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
+
+
+<div class="viewcode-block" id="plot_state_scaling_factors"><a class="viewcode-back" href="../../tell.html#tell.visualization.plot_state_scaling_factors">[docs]</a><span class="k">def</span> <span class="nf">plot_state_scaling_factors</span><span class="p">(</span><span class="n">shapefile_input_dir</span><span class="p">,</span> <span class="n">data_input_dir</span><span class="p">,</span> <span class="n">year_to_plot</span><span class="p">,</span> <span class="n">save_images</span><span class="p">,</span> <span class="n">image_resolution</span><span class="p">,</span>
+                               <span class="n">image_output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create state scaling factors map and save image in image directory</span>
+<span class="sd">         :param shapefile_input_dir:        Directory where the Census TL shapefile is stored</span>
+<span class="sd">         :type shapefile_input_dir:         dir</span>
+<span class="sd">         :param data_input_dir:             Directory to store the EIA 930 hourly load data as a csv</span>
+<span class="sd">         :type data_input_dir:              dir</span>
+<span class="sd">         :param year_to_plot:               What year to plot as a data visualization</span>
+<span class="sd">         :type year_to_plot:                int</span>
+<span class="sd">         :param save_images:                Save images to directory? 0 is no, 1 is yes</span>
+<span class="sd">         :type save_images:                 boolean</span>
+<span class="sd">         :param image_resolution:           Resolution in dpi to save images</span>
+<span class="sd">         :type image_resolution:            int</span>
+<span class="sd">         :param image_output_dir:           Directory to store the image outputs</span>
+<span class="sd">         :type image_output_dir:            dir</span>
+<span class="sd">         :return:                           State scaling factors map and save image in image directory</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+    <span class="n">states_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">((</span><span class="n">shapefile_input_dir</span> <span class="o">+</span> <span class="s1">&#39;/tl_2020_us_state.shp&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;GEOID&#39;</span><span class="p">:</span> <span class="s1">&#39;State_FIPS&#39;</span><span class="p">,</span> <span class="p">})</span>
+    <span class="n">states_df</span><span class="p">[</span><span class="s1">&#39;State_FIPS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">states_df</span><span class="p">[</span><span class="s1">&#39;State_FIPS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+
+    <span class="c1"># Read in the &#39;TELL_State_Summary_Data&#39; .csv file and reassign the &#39;State_FIPS&#39; code as an integer:</span>
+    <span class="n">state_summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">((</span><span class="n">data_input_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_State_Summary_Data_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;State_FIPS&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">})</span>
+
+    <span class="c1"># Merge the two dataframes together using state FIPS codes to join them and display the merged datafram:</span>
+    <span class="n">states_df</span> <span class="o">=</span> <span class="n">states_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">state_summary_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;State_FIPS&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;3%&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">ax1</span> <span class="o">=</span> <span class="n">states_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">&#39;Scaling_Factor&#39;</span><span class="p">,</span>
+                         <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu_r&#39;</span><span class="p">,</span>
+                         <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                         <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span>
+                         <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span>
+                         <span class="n">vmin</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                         <span class="n">vmax</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
+                         <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                         <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">legend_kwds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;TELL Scaling Factor&#39;</span><span class="p">,</span><span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="s1">&#39;vertical&#39;</span><span class="p">})</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">((</span><span class="s1">&#39;State-Level Scaling Factors in &#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">save_images</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+       <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">((</span><span class="n">image_output_dir</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_State_Scaling_Factors_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">image_resolution</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="plot_state_annual_total_loads"><a class="viewcode-back" href="../../tell.html#tell.visualization.plot_state_annual_total_loads">[docs]</a><span class="k">def</span> <span class="nf">plot_state_annual_total_loads</span><span class="p">(</span><span class="n">data_input_dir</span><span class="p">,</span> <span class="n">year_to_plot</span><span class="p">,</span> <span class="n">save_images</span><span class="p">,</span> <span class="n">image_resolution</span><span class="p">,</span> <span class="n">image_output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot the state annual total loads and save to image directory</span>
+<span class="sd">        :param data_input_dir:             Directory to store the EIA 930 hourly load data as a csv</span>
+<span class="sd">        :type data_input_dir:              dir</span>
+<span class="sd">        :param year_to_plot:               What year to plot as a data visualization</span>
+<span class="sd">        :type year_to_plot:                int</span>
+<span class="sd">        :param save_images:                Save images to directory? 0 is no, 1 is yes</span>
+<span class="sd">        :type save_images:                 boolean</span>
+<span class="sd">        :param image_resolution:           Resolution in dpi to save images</span>
+<span class="sd">        :type image_resolution:            int</span>
+<span class="sd">        :param image_output_dir:           Directory to store the image outputs</span>
+<span class="sd">        :type image_output_dir:            dir</span>
+<span class="sd">        :return:                           Plot of state annual total loads and save to image directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">state_summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">((</span><span class="n">data_input_dir</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_State_Summary_Data_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;State_FIPS&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">})</span>
+    <span class="n">x_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">state_summary_df</span><span class="p">))</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_axis</span> <span class="o">-</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">state_summary_df</span><span class="p">[</span><span class="s1">&#39;GCAM_USA_Load_TWh&#39;</span><span class="p">],</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;GCAM-USA Loads&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_axis</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">state_summary_df</span><span class="p">[</span><span class="s1">&#39;Raw_TELL_Load_TWh&#39;</span><span class="p">],</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unscaled TELL Loads&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">x_axis</span><span class="p">,</span> <span class="n">state_summary_df</span><span class="p">[</span><span class="s1">&#39;State_Name&#39;</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Annual Total Load [TWh]&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">((</span><span class="s1">&#39;Annual Total Loads from GCAM-USA and TELL in &#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">save_images</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">((</span><span class="n">image_output_dir</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_State_Annual_Total_Loads_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">),</span>
+            <span class="n">dpi</span><span class="o">=</span><span class="n">image_resolution</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plot_state_load_time_series"><a class="viewcode-back" href="../../tell.html#tell.visualization.plot_state_load_time_series">[docs]</a><span class="k">def</span> <span class="nf">plot_state_load_time_series</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">data_input_dir</span><span class="p">,</span> <span class="n">year_to_plot</span><span class="p">,</span> <span class="n">save_images</span><span class="p">,</span> <span class="n">image_resolution</span><span class="p">,</span>
+                                <span class="n">image_output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot state load time series and save to image directory</span>
+<span class="sd">       :param state:                      What state to plot state load time series</span>
+<span class="sd">       :type state:                       str</span>
+<span class="sd">       :param data_input_dir:             Directory to store the EIA 930 hourly load data as a csv</span>
+<span class="sd">       :type data_input_dir:              dir</span>
+<span class="sd">       :param year_to_plot:               What year to plot as a data visualization</span>
+<span class="sd">       :type year_to_plot:                int</span>
+<span class="sd">       :param save_images:                Save images to directory? 0 is no, 1 is yes</span>
+<span class="sd">       :type save_images:                 boolean</span>
+<span class="sd">       :param image_resolution:           Resolution in dpi to save images</span>
+<span class="sd">       :type image_resolution:            int</span>
+<span class="sd">       :param image_output_dir:           Directory to store the image outputs</span>
+<span class="sd">       :type image_output_dir:            dir</span>
+<span class="sd">       :return:                           Plot of state load time series and save to image directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">state_hourly_load_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">data_input_dir</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_State_Hourly_Load_Data_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">),</span>
+        <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Time_UTC&quot;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="p">))</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">state_subset_df</span> <span class="o">=</span> <span class="n">state_hourly_load_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">state_hourly_load_df</span><span class="p">[</span><span class="s1">&#39;State_Name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">state</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="p">))</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">state_subset_df</span> <span class="o">=</span> <span class="n">state_hourly_load_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">state_hourly_load_df</span><span class="p">[</span><span class="s1">&#39;State_FIPS&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">state</span><span class="p">]</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;Time_UTC&#39;</span><span class="p">],</span> <span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;Raw_TELL_State_Load_MWh&#39;</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Raw Load&#39;</span><span class="p">,</span>
+               <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;Time_UTC&#39;</span><span class="p">],</span> <span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;Scaled_TELL_State_Load_MWh&#39;</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Scaled Load&#39;</span><span class="p">,</span>
+               <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">((</span><span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;State_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; Raw TELL Loads in &#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span><span class="p">))</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">((</span><span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;State_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; Scaled TELL Loads in &#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span><span class="p">))</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Hourly Load [MWh]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Hourly Load [MWh]&#39;</span><span class="p">)</span>
+
+    <span class="n">state_name</span> <span class="o">=</span> <span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;State_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">state_name</span> <span class="o">=</span> <span class="n">state_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">save_images</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">((</span><span class="n">image_output_dir</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_State_Hourly_Loads_&#39;</span> <span class="o">+</span> <span class="n">state_name</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">),</span>
+                    <span class="n">dpi</span><span class="o">=</span><span class="n">image_resolution</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+
+    <span class="n">load_df_sorted</span> <span class="o">=</span> <span class="n">state_subset_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Scaled_TELL_State_Load_MWh&#39;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">load_df_sorted</span><span class="p">[</span><span class="s1">&#39;Interval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">load_df_sorted</span><span class="p">[</span><span class="s1">&#39;Duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">load_df_sorted</span><span class="p">[</span><span class="s1">&#39;Interval&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">load_df_sorted</span><span class="p">[</span><span class="s1">&#39;Duration&#39;</span><span class="p">],</span> <span class="n">load_df_sorted</span><span class="p">[</span><span class="s1">&#39;Raw_TELL_State_Load_MWh&#39;</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Raw Load&#39;</span><span class="p">,</span>
+             <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Duration [h]&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Scaled State Hourly Load [MWh]&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">((</span><span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;State_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; Load Duration Curve in &#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span><span class="p">))</span>
+
+    <span class="n">state_name</span> <span class="o">=</span> <span class="n">state_subset_df</span><span class="p">[</span><span class="s1">&#39;State_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">state_name</span> <span class="o">=</span> <span class="n">state_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">save_images</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">((</span><span class="n">image_output_dir</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_State_Load_Duration_Curve_&#39;</span> <span class="o">+</span> <span class="n">state_name</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">),</span>
+                    <span class="n">dpi</span><span class="o">=</span><span class="n">image_resolution</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span></div>
+
+        <span class="c1"># Define a function to plot time-series of hourly loads for a given BA based on the BA abbreviation or BA number:</span>
+
+
+<div class="viewcode-block" id="plot_ba_load_time_series"><a class="viewcode-back" href="../../tell.html#tell.visualization.plot_ba_load_time_series">[docs]</a><span class="k">def</span> <span class="nf">plot_ba_load_time_series</span><span class="p">(</span><span class="n">BA</span><span class="p">,</span> <span class="n">data_input_dir</span><span class="p">,</span> <span class="n">year_to_plot</span><span class="p">,</span> <span class="n">save_images</span><span class="p">,</span> <span class="n">image_resolution</span><span class="p">,</span> <span class="n">image_output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot the BA load time series and save to image directory</span>
+<span class="sd">       :param BA:                         What BA to plot load time series</span>
+<span class="sd">       :type BA:                          str</span>
+<span class="sd">       :param data_input_dir:             Directory to store the EIA 930 hourly load data as a csv</span>
+<span class="sd">       :type data_input_dir:              dir</span>
+<span class="sd">       :param year_to_plot:               What year to plot as a data visualization</span>
+<span class="sd">       :type year_to_plot:                int</span>
+<span class="sd">       :param save_images:                Save images to directory? 0 is no, 1 is yes</span>
+<span class="sd">       :type save_images:                 boolean</span>
+<span class="sd">       :param image_resolution:           Resolution in dpi to save images</span>
+<span class="sd">       :type image_resolution:            int</span>
+<span class="sd">       :param image_output_dir:           Directory to store the image outputs</span>
+<span class="sd">       :type image_output_dir:            dir</span>
+<span class="sd">       :return:                            BA load time series plot and save to image directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="c1"># Read in the &#39;TELL_Balancing_Authority_Hourly_Load_Data&#39; .csv file and display the dataframe:</span>
+    <span class="n">ba_hourly_load_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">((</span><span class="n">data_input_dir</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_Balancing_Authority_Hourly_Load_Data_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">),</span>
+        <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Time_UTC&quot;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">BA</span><span class="p">))</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">ba_subset_df</span> <span class="o">=</span> <span class="n">ba_hourly_load_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ba_hourly_load_df</span><span class="p">[</span><span class="s1">&#39;BA_Code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">BA</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">BA</span><span class="p">))</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">ba_subset_df</span> <span class="o">=</span> <span class="n">ba_hourly_load_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ba_hourly_load_df</span><span class="p">[</span><span class="s1">&#39;BA_Number&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">BA</span><span class="p">]</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ba_subset_df</span><span class="p">[</span><span class="s1">&#39;Time_UTC&#39;</span><span class="p">],</span> <span class="n">ba_subset_df</span><span class="p">[</span><span class="s1">&#39;Raw_TELL_BA_Load_MWh&#39;</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Raw Load&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ba_subset_df</span><span class="p">[</span><span class="s1">&#39;Time_UTC&#39;</span><span class="p">],</span> <span class="n">ba_subset_df</span><span class="p">[</span><span class="s1">&#39;Scaled_TELL_BA_Load_MWh&#39;</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Scaled Load&#39;</span><span class="p">,</span>
+               <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">((</span><span class="n">ba_subset_df</span><span class="p">[</span><span class="s1">&#39;BA_Code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; Raw TELL Loads in &#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span><span class="p">))</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">((</span><span class="n">ba_subset_df</span><span class="p">[</span><span class="s1">&#39;BA_Code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; Scaled TELL Loads in &#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span><span class="p">))</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Hourly Load [MWh]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Hourly Load [MWh]&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">save_images</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">((</span><span class="n">image_output_dir</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s1">&#39;TELL_BA_Hourly_Loads_&#39;</span> <span class="o">+</span> <span class="n">ba_subset_df</span><span class="p">[</span><span class="s1">&#39;BA_Code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span>
+            <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">year_to_plot</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">image_resolution</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Batelle Memorial Institute.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

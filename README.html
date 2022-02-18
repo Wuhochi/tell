@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TELL &mdash; TELL latest documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
+      <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
+      <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
+      <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Welcome to the TELL Quickstarter!" href="tell_quickstarter.html" />
+    <link rel="prev" title="TELL documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> TELL
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tell_quickstarter.html">Quickstarter Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgement.html">Acknowledgement</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TELL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>TELL</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<p><img alt="build" src="https://github.com/IMMM-SFA/tell/workflows/build/badge.svg" /> <a class="reference external" href="https://codecov.io/gh/IMMM-SFA/tell"><img alt="codecov" src="https://codecov.io/gh/IMMM-SFA/tell/branch/package/graph/badge.svg?token=URP1KWRI6U" /></a></p>
+<section id="tell">
+<h1>TELL<a class="headerlink" href="#tell" title="Permalink to this headline"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">tell</span></code> is an open-source Python package for predicting future electricty load in the Lower 48 United States.</p>
+<section id="a-little-about-tell">
+<h2>A little about <code class="docutils literal notranslate"><span class="pre">tell</span></code><a class="headerlink" href="#a-little-about-tell" title="Permalink to this headline"></a></h2>
+<p>The Total ELectricity Load (TELL) model provides a framework that integrates aspects of both short- and long-term predictions of electricity demand in a coherent and scalable way. tell takes as input gridded hourly time-series of meteorology and uses the temporal variations in weather to predict hourly profiles of total electricity demand for every county in the l ower 48 United States using a multilayer perceptron (MLP) approach. Hourly predictions from tell are then scaled to match the annual state-level total electricity loads predicted by the U.S. version of the Global Change Analysis Model (GCAM-USA). GCAM-USA is designed to capture the long-term co-evolution of the human-Earth system. Using this unique approach allows tell to reflect both changes in the shape of the load profile due to variations in weather and climate and the long-term evolution of energy demand due to changes in population, technology, and economics. tell is unique from other probabilistic load forecasting models in that it features an explicit spatial component that allows us to relate predicted loads to where they would occur spatially within a grid operations model.</p>
+</section>
+<section id="lets-get-started">
+<h2>Lets get started!<a class="headerlink" href="#lets-get-started" title="Permalink to this headline"></a></h2>
+<p>In this quickstarter we will walk through a subset of the data used in <code class="docutils literal notranslate"><span class="pre">tell</span></code>, starting with importing the package and ending with data visualization. This allows the user to walk through the entire <code class="docutils literal notranslate"><span class="pre">tell</span></code> package in a matter of minutes. If you have more questions please feel free to visit the <a class="reference external" href="https://immm-sfa.github.io/tell/index.html">Read the Docs</a> site for <code class="docutils literal notranslate"><span class="pre">tell</span></code>.</p>
+<section id="load-necessary-packages">
+<h3>Load necessary packages<a class="headerlink" href="#load-necessary-packages" title="Permalink to this headline"></a></h3>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span>import tell
+import os 
+import time 
+</pre></div>
+</div>
+</section>
+<section id="install-package-data">
+<h3>Install package data<a class="headerlink" href="#install-package-data" title="Permalink to this headline"></a></h3>
+<p><strong>NOTE: The package data will require approximately 1.4 GB of storage.</strong></p>
+<p>Set the local directory where you would like to store the package data and run the function below:</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span># Create directory to store raw data
+current_dir =  os.path.dirname(os.getcwd())
+current_dir =  os.path.join(os.path.dirname(os.getcwd()), r&#39;tell_valid&#39;)
+raw_data_dir = os.path.join(current_dir, r&#39;raw_data&#39;, r&#39;demand_and_population&#39;)
+if not os.path.exists(raw_data_dir):
+   os.makedirs(raw_data_dir)
+
+# Download the raw data from the Zenodo package
+tell.install_package_data(data_dir = raw_data_dir)
+</pre></div>
+</div>
+</section>
+</section>
+<section id="data-pre-processing-for-tell">
+<h2>1. Data pre-processing for TELL<a class="headerlink" href="#data-pre-processing-for-tell" title="Permalink to this headline"></a></h2>
+<p>In the next few code blocks we will load and manipulate the nescessary data for the <code class="docutils literal notranslate"><span class="pre">tell</span></code>  package. This consists of hourly load, population and meteorology for the CONUS, which will be loaded in from raw data sources, manipulated and then compiled together to use as input for the MLP model. Please follow the steps below to produce the hourly input data, if you have already finished this step you can proceed to <strong>2. Model training and prediction</strong></p>
+<section id="spaitally-mapping-the-balancing-authorities-bas">
+<h3>1.0 Spaitally mapping the Balancing Authorities (BAs)<a class="headerlink" href="#spaitally-mapping-the-balancing-authorities-bas" title="Permalink to this headline"></a></h3>
+<p>The code chunk below brings in the unique spatial component of <tell>, where we map the Balancing Authorities (BAs) to the Federal Information Processing Standard Publication (FIPS) codes. This allows us to assign load where it occurs spatially within the CONUS.</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span>## FIPS to BA code mapping ##
+#Set the start and end year for processing
+start_year = 2015
+end_year = 2019
+
+tell.map_fips_codes(start_year, end_year,raw_data_dir, current_dir)
+</pre></div>
+</div>
+</section>
+<section id="hourly-load">
+<h3>1.1 Hourly load<a class="headerlink" href="#hourly-load" title="Permalink to this headline"></a></h3>
+<p>Here we load in the raw EIA 930 hourly load profiles for all Balancing Authorities (BAs), subset for the wanted columns only and then output the hourly load as csvs to be compiled later with population, and meteorology to be fed to the MLP model downstream for predict future load.</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span># Set the data input and output directories:
+eia_930_input_dir = raw_data_dir
+eia_930_output_dir = os.path.join(current_dir, r&#39;outputs&#39;, r&#39;hourly_ba_load&#39;)
+if not os.path.exists(eia_930_output_dir):
+   os.makedirs(eia_930_output_dir)
+
+# Process the hourly load data
+tell.process_eia_930(eia_930_input_dir, eia_930_output_dir)
+</pre></div>
+</div>
+</section>
+<section id="population-data">
+<h3>1.2 Population data<a class="headerlink" href="#population-data" title="Permalink to this headline"></a></h3>
+<p>For this data processing step we will load in the annual population by FIPS code, merge by FIPS code to get the correspondng BA number, sum by  year and BA number and then interpolate the annual population to hourly population in order to feed it to the MLP model downstream.</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span># Set the data input and output directories:
+population_input_dir = raw_data_dir
+map_input_dir = os.path.join(current_dir, r&#39;outputs&#39;, r&#39;fips_mapping_files&#39;)
+population_output_dir =  os.path.join(current_dir, r&#39;outputs&#39;, r&#39;hourly_population&#39;)
+if not os.path.exists(pop_output_dir):
+   os.makedirs(pop_output_dir)
+
+tell.ba_pop_interpolate(map_input_dir, pop_input_dir, pop_output_dir, start_year, end_year)
+</pre></div>
+</div>
+</section>
+<section id="meteorology-data">
+<h3>1.3 Meteorology data<a class="headerlink" href="#meteorology-data" title="Permalink to this headline"></a></h3>
+<p>Here we use the <im3components> package to load in the WRF meterology data, average WRF meteorology by county and then aggregate them into annual hourly time-series of population-weighted meteorology for each balancing authority (BA). All times are in UTC. Missing values are reported as -9999. First we download a subset of the wrf data from the Zenodo package to work with in this quickstarter. For thi subset we choose the target year of 2019.</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span># Create input directory meterology data #
+wrf_input_dir =  os.path.join(current_dir, r&#39;raw_data&#39;, r&#39;wrf&#39;)
+if not os.path.exists(wrf_input_dir):
+   os.makedirs(wrf_input_dir)
+
+# Download the raw sample wrf data from the Zenodo package
+tell.install_sample_data(data_dir = wrf_input_dir)
+
+# Create output directory meteorology data #
+wrf_output_dir =  os.path.join(current_dir, r&#39;outputs&#39;, r&#39;hourly_meteorology&#39;)
+if not os.path.exists(wrf_output_dir):
+   os.makedirs(wrf_output_dir)
+
+# set the target year 
+target_yr = 2019
+
+# Process wrf data to put into right date format
+tell.process_wrf(wrf_input_dir, wrf_output_dir, target_yr, n_jobs=-1)
+</pre></div>
+</div>
+</section>
+<section id="compile-hourly-load-population-and-meterology-data">
+<h3>1.4 Compile hourly load, population and meterology data<a class="headerlink" href="#compile-hourly-load-population-and-meterology-data" title="Permalink to this headline"></a></h3>
+<p>Here we compile all the data processing steps above for hourly load (EIA 930), population (county FIPS) and meteorology (WRF) to get a final cleaned up dataset to use as an input to the MLP model.</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span># create directory to store the compiled data
+compile_output_dir =  os.path.join(current_dir, r&#39;outputs&#39;, r&#39;compiled_data&#39;)
+if not os.path.exists(compile_output_dir):
+   os.makedirs(compile_output_dir)
+
+#set target year for WRF data
+target_yr = 2019
+
+# compile the hourly load data, population data, and wrf climate data by date
+tell.compile_data(eia_930_output_dir, population_output_dir, wrf_output_dir, target_yr, compile_output_dir)
+</pre></div>
+</div>
+</section>
+</section>
+<section id="model-training-and-prediction">
+<h2>2. Model training and prediction<a class="headerlink" href="#model-training-and-prediction" title="Permalink to this headline"></a></h2>
+<p>This step takes the data processed and compiled above and runs a multilayer perceptron (MLP) model to predict future hourly load. Start-time is the start-time for analysis, end-time is the end time for analysis and start_test_period is the timestamp splitting train and test data.</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span># create the directory for the mlp output
+mlp_output_dir =  os.path.join(current_dir, r&#39;outputs&#39;, r&#39;mlp_output&#39;)
+if not os.path.exists(mlp_output_dir):
+   os.makedirs(mlp_output_dir)
+
+# specify the parameters of the MLP model
+batch_run = True
+target_ba_list = None
+generate_plots = True
+start_time = &quot;2019-01-01 00:00:00&quot;
+end_time = &quot;2019-12-31 23:00:00&quot;
+start_test_period = &quot;2019-06-01 00:00:00&quot;
+
+t0 = time.time()
+
+tell.predict(compile_output_dir ,
+            mlp_output_dir,
+            start_time = start_time,
+            end_time = end_time
+            start_test_period = start_test_period,
+            batch_run = batch_run,
+            target_ba_list = target_ba_list,
+            generate_plots = generate_plots)ompile_data(eia_930_output_dir, population_output_dir, wrf_output_dir, target_yr, compile_output_dir)
+</pre></div>
+</div>
+</section>
+<section id="model-forward-execution">
+<h2>3. Model forward execution<a class="headerlink" href="#model-forward-execution" title="Permalink to this headline"></a></h2>
+<p>This script takes the .csv files produced by the TELL MLP model and distributes the predicted load to the counties that each balancing authority (BA) operates in. The county-level hourly loads are then summed to the state-level and scaled to match the state-level annual loads produced by GCAM-USA. Three sets of output files are generated: county-level hourly loads, state-level hourly loads, and hourly loads for each BA. There is one additional summary output file that includes state-level annual loads from TELL and GCAM-USA as well as the scaling factors.</p>
+<p>Please set the directories below to your local machine preferences and run the tell.execute_forward function.</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span># Set the year to process:
+year_to_process = &#39;2020&#39;
+
+# Set the data input and output directories:
+mlp_input_dir = os.path.join(current_dir, r&#39;outputs&#39;, r&#39;mlp_output&#39;)
+ba_geolocation_input_dir = os.path.join(current_dir, r&#39;outputs&#39;, r&#39;fips_mapping_files&#39;)
+gcam_usa_input_dir = raw_data_dir
+data_output_dir = os.path.join(current_dir, r&#39;outputs&#39;, r&#39;forward_output&#39;, rf&#39;{year_to_process}&#39;)
+if not os.path.exists(data_output_dir):
+   os.makedirs(data_output_dir)
+
+
+# Run the MLP model forward in time and
+tell.execute_forward(year_to_process, mlp_input_dir, ba_geolocation_input_dir,
+                     population_input_dir, gcam_usa_input_dir, data_output_dir)
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Model visualization
+Below are a few select model visualizations to check on model performance for select states and BAs</p></li>
+</ol>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span># Set the data input and output directories:
+data_input_dir = data_output_dir
+image_output_dir = os.path.join(current_dir, r&#39;outputs&#39;, r&#39;image_output&#39;)
+if not os.path.exists(image_output_dir):
+   os.makedirs(image_output_dir)
+shapefile_input_dir = raw_data_dir
+
+# Set the year of TELL output to visualize:
+year_to_plot = &#39;2020&#39;
+
+# Choose whether or not to save the images and set the image resolution:
+save_images = 0 # (1 = Yes)
+image_resolution = 150 # (dpi)
+
+sample_state = &#39;California&#39;
+sample_ba = &#39;ERCO&#39;
+
+# If you want to save the images, check that the image output directory exist and if not then create it:
+if save_images == 1:
+    image_output_dir = os.path.join(image_output_dir, rf&#39;{year_to_plot}&#39;)
+    if not os.path.exists(image_output_dir):
+        os.makedirs(image_output_dir)
+
+# Plot a map of the state scaling factors:
+tell.plot_state_scaling_factors(shapefile_input_dir, data_input_dir, year_to_plot, save_images, image_resolution,
+                                image_output_dir)
+
+# Plot the state annual total loads from GCAM-USA and TELL:
+tell.plot_state_annual_total_loads(state_summary_df, year_to_plot, save_images, image_resolution, image_output_dir)
+
+# Plot the time-series of total hourly loads for a given state by specifying either the state name or FIPS code:
+tell.plot_state_load_time_series(state, state_hourly_load_df, year_to_plot, save_images, image_resolution,
+                                 image_output_dir)
+
+# Plot the load duration curve for a given state by specifying either the state name or FIPS code:
+tell.plot_state_load_duration_curve(state, state_hourly_load_df, year_to_plot, save_images, image_resolution,
+                                    image_output_dir)
+
+# Plot the time-series of total hourly loads for a given BA by specifying either the BA abbreviation or BA number:
+tell.plot_ba_load_time_series(sample_ba, ba_hourly_load_df, year_to_plot, save_images, image_resolution, image_output_dir)
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="TELL documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tell_quickstarter.html" class="btn btn-neutral float-right" title="Welcome to the TELL Quickstarter!" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Batelle Memorial Institute.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
