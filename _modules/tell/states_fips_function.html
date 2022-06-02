@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tell.states_fips_function &mdash; TELL latest documentation</title>
+  <title>tell.states_fips_function &mdash; TELL  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
@@ -18,7 +18,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -32,7 +31,7 @@
             <a href="../../index.html" class="icon icon-home"> TELL
           </a>
               <div class="version">
-                0.0.1
+                latest
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -77,22 +76,21 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tell.states_fips_function</h1><div class="highlight"><pre>
-<span></span><span class="c1"># state_fips_functions.py</span>
-<span class="c1"># Casey D. Burleyson</span>
-<span class="c1"># Pacific Northwest National Laboratory</span>
-<span class="c1"># 15-Sep 2021</span>
-
-<span class="c1"># This contains multiple functions for looking up the metadata of a state given the state</span>
-<span class="c1"># abbreviation, name, or FIPS code.</span>
-
-<span class="c1"># Create a function to return the state FIPS code and state name given the state&#39;s abbreviation:</span>
-<div class="viewcode-block" id="state_metadata_from_state_abbreviation"><a class="viewcode-back" href="../../tell.html#tell.states_fips_function.state_metadata_from_state_abbreviation">[docs]</a><span class="k">def</span> <span class="nf">state_metadata_from_state_abbreviation</span><span class="p">(</span><span class="n">state_abbreviation</span><span class="p">):</span>
+<div class="viewcode-block" id="state_metadata_from_state_abbreviation"><a class="viewcode-back" href="../../tell.html#tell.states_fips_function.state_metadata_from_state_abbreviation">[docs]</a><span></span><span class="k">def</span> <span class="nf">state_metadata_from_state_abbreviation</span><span class="p">(</span><span class="n">state_abbreviation</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Define the state FIPS code and state name from a given state abbreviation.</span>
-<span class="sd">    :param state_abbreviation: str -&gt; state abbreviation</span>
-<span class="sd">    :return: state_fips: num -&gt; state FIPS code</span>
-<span class="sd">    :return: state_name: str -&gt; state name</span>
+
+<span class="sd">    :param state_abbreviation:          state abbreviation</span>
+<span class="sd">    :type state_abbreviation:           str</span>
+
+<span class="sd">    :return:                            [0] state FIPS code</span>
+<span class="sd">                                        [1] state name</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">state_fips</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">state_name</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">if</span> <span class="n">state_abbreviation</span> <span class="o">==</span> <span class="s1">&#39;AK&#39;</span><span class="p">:</span> <span class="n">state_fips</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>  <span class="n">state_name</span> <span class="o">=</span> <span class="s1">&#39;Alaska&#39;</span>
     <span class="k">if</span> <span class="n">state_abbreviation</span> <span class="o">==</span> <span class="s1">&#39;AL&#39;</span><span class="p">:</span> <span class="n">state_fips</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>  <span class="n">state_name</span> <span class="o">=</span> <span class="s1">&#39;Alabama&#39;</span>
     <span class="k">if</span> <span class="n">state_abbreviation</span> <span class="o">==</span> <span class="s1">&#39;AK&#39;</span><span class="p">:</span> <span class="n">state_fips</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">;</span>  <span class="n">state_name</span> <span class="o">=</span> <span class="s1">&#39;Alaska&#39;</span>
@@ -145,6 +143,9 @@
     <span class="k">if</span> <span class="n">state_abbreviation</span> <span class="o">==</span> <span class="s1">&#39;WV&#39;</span><span class="p">:</span> <span class="n">state_fips</span> <span class="o">=</span> <span class="mi">54000</span><span class="p">;</span> <span class="n">state_name</span> <span class="o">=</span> <span class="s1">&#39;West Virginia&#39;</span>
     <span class="k">if</span> <span class="n">state_abbreviation</span> <span class="o">==</span> <span class="s1">&#39;WI&#39;</span><span class="p">:</span> <span class="n">state_fips</span> <span class="o">=</span> <span class="mi">55000</span><span class="p">;</span> <span class="n">state_name</span> <span class="o">=</span> <span class="s1">&#39;Wisconsin&#39;</span>
     <span class="k">if</span> <span class="n">state_abbreviation</span> <span class="o">==</span> <span class="s1">&#39;WY&#39;</span><span class="p">:</span> <span class="n">state_fips</span> <span class="o">=</span> <span class="mi">56000</span><span class="p">;</span> <span class="n">state_name</span> <span class="o">=</span> <span class="s1">&#39;Wyoming&#39;</span>
+
+    <span class="k">if</span> <span class="n">state_fips</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are no FIPS codes available for state abbreviation:  &#39;</span><span class="si">{</span><span class="n">state_abbreviation</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">state_fips</span><span class="p">,</span> <span class="n">state_name</span></div>
 </pre></div>
